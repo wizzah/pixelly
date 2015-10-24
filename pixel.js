@@ -49,7 +49,7 @@ function generate_edge_points(n) {
 	console.log(color_list[color_index++ % color_limit]);
 	for(var i = 0; i < n; i++)
 	{
-		points.push({x: n+453, y: n+34, color: color_list[color_index++ % color_limit], radius: Math.floor(Math.random() * 50) + 20});
+		points.push({x: n+453, y: n+34, color: color_list[color_index++ % color_limit], radius: Math.floor(Math.random() * 30) + 10});
 	}// points[453].origin_x = points[453].x;
 	// points[34].origin_y = points[34].y;
 }
@@ -78,6 +78,7 @@ function get_pixels()
 	imageData = context.getImageData(0, 0, width, height);
 	// imageData = ctx.getImageData(0, 0, width, height);
 	pixels = imageData.data;
+	lain_img_data = pixels.slice();
 }
 
 // return closest point to x, y
@@ -152,9 +153,9 @@ function put_pixels()
 			// Change it pixel is close to a center
 			if (dist < 200)
 			{
-	            pixels[i++] += 10;
-	            pixels[i++] -= 5;
-				pixels[i++] += 20;
+	            pixels[i] = lain_img_data[i++] + (dist / 10);
+	            pixels[i] = lain_img_data[i++] - (dist / 5);
+				pixels[i] = lain_img_data[i++] + (dist/ 15);
 				pixels[i++] = 255;
 			}
 			else
