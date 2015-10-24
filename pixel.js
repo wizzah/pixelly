@@ -17,7 +17,7 @@ function imageLoaded(ev) {
 	var imageData = context.getImageData(0, 0, width, height);
 	lain_img_data = obj_list(imageData.data);
 	//process for making points?
-	console.log(lain_img_data[34]);
+	// console.log(lain_img_data[34]);
 }
 
 var points, imageData, pixels;
@@ -46,13 +46,15 @@ function generate_edge_points(n) {
 	points = [];
 	var color_index = 0;
 	var color_limit = color_list.length;
-	console.log("SDFSDFDFS");	
 	console.log(color_list[color_index++ % color_limit]);
 	for(var i = 0; i < n; i++)
 	{
 		points.push({x: n+453, y: n+34, color: color_list[color_index++ % color_limit], radius: Math.floor(Math.random() * 50) + 20});
-	}// points[453].origin_x = points[453].x;
-	// points[34].origin_y = points[34].y;
+		points[i].origin_x = points[i].x;
+		points[i].origin_y = points[i].y;
+	}
+
+	console.log(points, n+453);
 }
 
 // function generate_stable_color() {
@@ -132,7 +134,6 @@ function proxmityColor(x, y)
 	for(var i = start_point; i <start_point+3 ; i++)
 	{
 		var percent = distances[i] / total_dist;
-		console.log(points[i]);
 		color.r -= points[i].color.r * percent;
 		color.g -= points[i].color.g * percent;
 		color.b -= points[i].color.b * percent;
@@ -147,6 +148,7 @@ function distance(x1, y1, x2, y2)
 function put_pixels()
 {
 	var i = 0;
+	// console.log(points);
 	for(var y = 0; y < height; y++)
 		for(var x = 0; x < width; x++)
 		{
@@ -168,7 +170,7 @@ var t = 0;
 // generate_points(10);
 generate_edge_points(5);
 var stable_color = {r: Math.floor((Math.random() * 255) + 0), g: Math.floor((Math.random() * 255) + 0), b: Math.floor((Math.random() * 255) + 0)};
-console.log(stable_color);
+// console.log(stable_color);
 get_pixels();
 setInterval(function(){
 	move_points(t++);
