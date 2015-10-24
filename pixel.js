@@ -49,7 +49,7 @@ function generate_edge_points(n) {
 	console.log(color_list[color_index++ % color_limit]);
 	for(var i = 0; i < n; i++)
 	{
-		points.push({x: n+453, y: n+34, color: color_list[color_index++ % color_limit], radius: Math.floor(Math.random() * 50) + 20});
+		points.push({x: n+453, y: n+34, color: {r: Math.floor((Math.random() * 255) + 0), g: Math.floor((Math.random() * 255) + 0), b: Math.floor((Math.random() * 255) + 0)}, radius: Math.floor(Math.random() * 50) + 20});
 		points[i].origin_x = points[i].x;
 		points[i].origin_y = points[i].y;
 	}
