@@ -9,8 +9,8 @@ function imageLoaded(ev) {
 
 	var lain_img = document.createElement("canvas");
 	var context = lain_img.getContext('2d');
-	lain_img.width = 1520;
-	lain_img.height = 1080;
+	lain_img.width = 760;
+	lain_img.height = 540;
 	context.drawImage(im, 0, 0);
 	// get all canvas pixel data
 	var imageData = context.getImageData(0, 0, width, height);
@@ -172,7 +172,7 @@ function put_pixels()
 	ctx.putImageData(imageData, 0, 0);
 }
 var t = 0;
-generate_points(5);
+generate_points(7);
 // generate_edge_points(5);
 var stable_color = {r: Math.floor((Math.random() * 255) + 0), g: Math.floor((Math.random() * 255) + 0), b: Math.floor((Math.random() * 255) + 0)};
 
@@ -180,6 +180,8 @@ var stable_color = {r: Math.floor((Math.random() * 255) + 0), g: Math.floor((Mat
 //load lain image
 im = new Image();
 im.onload = function(){
+	im.width = 760;
+	im.height = 540;
 	get_pixels();
 	setInterval(function(){
 		move_points(t++);
