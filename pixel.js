@@ -5,19 +5,16 @@ var width = canvas_element.width;
 var height = canvas_element.height;
 
 var lain_img_data;
-var new_img;
 function imageLoaded(ev) {
 
 	var lain_img = document.createElement("canvas");
 	var context = lain_img.getContext('2d');
-	lain_img.width = 1520;
-	lain_img.height = 1080;
+	lain_img.width = 760;
+	lain_img.height = 540;
 	context.drawImage(im, 0, 0);
 	// get all canvas pixel data
 	var imageData = context.getImageData(0, 0, width, height);
 	lain_img_data = obj_list(imageData.data);
-	//process for making points?
-	// console.log(lain_img_data[34]);
 }
 
 var points, imageData, pixels;
@@ -46,15 +43,14 @@ function generate_edge_points(n) {
 	points = [];
 	var color_index = 0;
 	var color_limit = color_list.length;
-	console.log(color_list[color_index++ % color_limit]);
 	for(var i = 0; i < n; i++)
 	{
-		points.push({x: n+453, y: n+34, color: {r: Math.floor((Math.random() * 255) + 0), g: Math.floor((Math.random() * 255) + 0), b: Math.floor((Math.random() * 255) + 0)}, radius: Math.floor(Math.random() * 50) + 20});
+		// points.push({x: n+453, y: n+34, color: {r: Math.floor((Math.random() * 255) + 0), g: Math.floor((Math.random() * 255) + 0), b: Math.floor((Math.random() * 255) + 0)}, radius: Math.floor(Math.random() * 50) + 20});
+		points.push({x: n+453, y: n+34, color: color_list[color_index++ % color_limit], radius: Math.floor(Math.random() * 40) + 20});
 		points[i].origin_x = points[i].x;
 		points[i].origin_y = points[i].y;
 	}
 
-	console.log(points, n+453);
 }
 
 // function generate_stable_color() {
@@ -96,8 +92,17 @@ function move_points(t)
 // get all canvas pixel data
 function get_pixels()
 {
-	imageData = ctx.getImageData(0, 0, width, height);
+	// get lain data now
+	var lain_img = document.createElement("canvas");
+	var context = lain_img.getContext('2d');
+	lain_img.width = 1520;
+	lain_img.height = 1080;
+	context.drawImage(im, 0, 0);
+	// get all canvas pixel data
+	imageData = context.getImageData(0, 0, width, height);
+	// imageData = ctx.getImageData(0, 0, width, height);
 	pixels = imageData.data;
+	lain_img_data = pixels.slice();
 }
 
 // return closest point to x, y
@@ -116,6 +121,23 @@ function findClosestPoint(x, y)
 		}
 	}
 	return points[point];
+}
+// returns distance of closest point
+function findClosestDistance(x, y)
+{
+	var lowest_dist = width*height;
+	var point = -1;
+	var points_len = points.length;
+	for(var i = 0; i < points_len; i++)
+	{
+		var dist = distance(x, y, points[i].x, points[i].y);
+		if(dist < lowest_dist)
+		{
+			point = i;
+			lowest_dist = dist;
+		}
+	}
+	return lowest_dist;
 }
 // blend colors based on proxmity 
 function proxmityColor(x, y)
@@ -148,36 +170,46 @@ function distance(x1, y1, x2, y2)
 function put_pixels()
 {
 	var i = 0;
-	// console.log(points);
 	for(var y = 0; y < height; y++)
 		for(var x = 0; x < width; x++)
 		{
-			var color = proxmityColor(x, y);//findClosestPoint(x, y);
-            pixels[i++] = color.r;
-            pixels[i++] = color.b;
-			pixels[i++] = color.g;
+			// var dist = findClosestDistance(x, y);
+			var color = proxmityColor(x, y);
+			// Change it pixel is close to a center
+			// if (dist < 200)
+			// {
+            pixels[i] = (lain_img_data[i++] + (color.r)) % 255;
+            pixels[i] = (lain_img_data[i++] - (color.g)) % 255;
+			pixels[i] = (lain_img_data[i++] + (color.b)) % 255;
 			pixels[i++] = 255;
-            if(color.r > color.b) {
-            	pixels[i++] = Math.floor((Math.random() * 255) + 0);
-                pixels[i++] = stable_color.r;
-            }
-
+			// }
+			// else
+			// {
+			// 	pixels[i] = lain_img_data[i++];
+	  //           pixels[i] = lain_img_data[i++];
+			// 	pixels[i] = lain_img_data[i++];
+			// 	pixels[i++] = 255; 
+			// }
 		}
 	imageData.data.set(pixels);
 	ctx.putImageData(imageData, 0, 0);
 }
 var t = 0;
-// generate_points(10);
-generate_edge_points(5);
+
+generate_points(7);
+// generate_edge_points(5);
 var stable_color = {r: Math.floor((Math.random() * 255) + 0), g: Math.floor((Math.random() * 255) + 0), b: Math.floor((Math.random() * 255) + 0)};
-// console.log(stable_color);
-get_pixels();
-setInterval(function(){
-	move_points(t++);
-	put_pixels();
-}, 150)
+
 
 //load lain image
 im = new Image();
-im.onload = imageLoaded;
+im.onload = function(){
+	im.width = 760;
+	im.height = 540;
+	get_pixels();
+	setInterval(function(){
+		move_points(t++);
+		put_pixels();
+	}, 150)
+};
 im.src = "lain.jpg"; 
